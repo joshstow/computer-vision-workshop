@@ -1,5 +1,8 @@
 .DS_Store
 .python-version
+
 .venv/
+models/
+ipynb_checkpoints/
 
 *.pt
