@@ -2,7 +2,9 @@
 .python-version
 
 .venv/
-models/
 ipynb_checkpoints/
+
+models/
+results/
 
 *.pt
