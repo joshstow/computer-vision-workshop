@@ -2,6 +2,8 @@
 
 A hands-on workshop going from raw pixels (OpenCV) through real-time object detection (YOLO) to foundation models (SAM 2 & CLIP).
 
+_by Josh Stow_
+
 ## Prerequisites
 
 - A webcam (built-in or USB)
@@ -187,7 +189,7 @@ You're ready to go!
 | 01 | `01_opencv.ipynb` | Image matrices, colour spaces, edge detection, live webcam filters |
 | 02 | `02_yolo.ipynb` | Real-time object detection & tracking, pose estimation, segmentation |
 | 03 | `03_sam.ipynb` | SAM 2 auto-masks, CLIP zero-shot classification, YOLO + SAM 2 mega-pipeline |
-| 04 | `04_advanced.ipynb` | Advanced Video Tracking, Text-Prompted Segmentation & CLIP Fine-Tuning |
+| 04 | `04_advanced.ipynb` | Advanced video tracking, text-prompted segmentation & CLIP fine-tuning |
 
 Work through them in order — each notebook builds on concepts from the previous one.
 
