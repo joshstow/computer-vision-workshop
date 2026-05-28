@@ -16,12 +16,46 @@ _by Josh Stow_
 
 > **Important:** This workshop requires **Python 3.12**. Newer versions (3.13/3.14) do not yet have compatible binary packages for all dependencies.
 
-### 1. Get Python 3.12
+### 1. Install uv (recommended)
 
-Choose **one** of the options below — whichever suits your setup.
+Install [uv](https://astral.sh/uv) first. We use it to install Python and create a consistent virtual environment across machines.
+
+#### macOS / Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Windows (PowerShell)
+
+```powershell
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+Restart your terminal after installation, then verify:
+
+```bash
+uv --version
+```
+
+---
+
+### 2. Install Python 3.12 with uv
+
+```bash
+uv python install 3.12
+```
+
+Verify you have the right version before continuing:
+
+```bash
+uv python list | grep 3.12
+```
+
+> **Important:** This workshop requires **Python 3.12**. Newer versions (3.13/3.14) do not yet have compatible binary packages for all dependencies.
 
 <details>
-<summary><strong>Option A: Install Python 3.12 directly</strong> (simplest)</summary>
+<summary><strong>Backup: Install Python 3.12 without uv</strong></summary>
 
 Download and install the latest Python 3.12 release from the official site:
 
@@ -45,7 +79,7 @@ python3.12 --version
 </details>
 
 <details>
-<summary><strong>Option B: Use pyenv</strong> (manage multiple Python versions side-by-side)</summary>
+<summary><strong>Backup: Use pyenv</strong> (manage multiple Python versions side-by-side)</summary>
 
 [pyenv](https://github.com/pyenv/pyenv) lets you install and switch between multiple Python versions easily.
 
@@ -120,18 +154,9 @@ pyenv local 3.12
 
 </details>
 
-Verify you have the right version before continuing:
-
-```bash
-python --version
-# Should output: Python 3.12.x
-```
-
-> On macOS/Linux you may need to use `python3` or `python3.12` instead of `python` — use whichever command shows 3.12.x. The same applies to `pip` (`pip3` / `pip3.12`).
-
 ---
 
-### 2. Clone the Repository
+### 3. Clone the Repository
 
 ```bash
 git clone https://github.com/joshstow/computer-vision-workshop.git
@@ -140,7 +165,27 @@ cd computer-vision-workshop
 
 ---
 
-### 3. Create and Activate a Virtual Environment
+### 4. Create and Activate a Virtual Environment (uv)
+
+#### macOS / Linux
+
+```bash
+uv venv --python 3.12
+source .venv/bin/activate
+```
+
+#### Windows (PowerShell)
+
+```powershell
+uv venv --python 3.12
+.venv\Scripts\Activate.ps1
+```
+
+> If you get an execution policy error on Windows, run:
+> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+<details>
+<summary><strong>Backup: Create a venv without uv</strong></summary>
 
 #### macOS / Linux
 
@@ -159,9 +204,11 @@ python -m venv .venv
 > If you get an execution policy error on Windows, run:
 > `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
+</details>
+
 ---
 
-### 4. Install Dependencies
+### 5. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -171,7 +218,7 @@ This installs everything needed for all three notebooks (OpenCV, YOLO, SAM 2, CL
 
 ---
 
-### 5. Select the Kernel in VS Code
+### 6. Select the Kernel in VS Code
 
 1. Open the `computer-vision-workshop` folder in VS Code.
 2. Open any notebook (e.g. `01_opencv.ipynb`).
