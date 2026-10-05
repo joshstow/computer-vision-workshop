@@ -152,8 +152,27 @@ Work through them in order — each notebook builds on concepts from the previou
 
 ## Troubleshooting
 
-- **`ModuleNotFoundError`** — Make sure your virtual environment is activated and you've selected the `.venv` kernel in VS Code. Re-run `pip install -r requirements.txt` if needed.
-- **Webcam not opening** — Try changing `cv2.VideoCapture(0)` to `cv2.VideoCapture(1)` if you have multiple cameras.
-- **Window won't close** — Press `q` while the OpenCV window is focused. If it's still stuck, restart the notebook kernel.
-- **NumPy / torch build errors** — You're probably on the wrong Python version. Run `python --version` and make sure it says 3.12.x.
-- **SAM 2 checkpoint download fails** — Check your internet connection. The checkpoint (~150 MB) downloads automatically the first time you run the SAM 2 setup cell in `03_sam.ipynb`.
+Run `uv run python check_setup.py` first: it pinpoints most problems. Then find your error below.
+
+### Installing
+
+| You see… | Fix |
+|---|---|
+| `uv: command not found` / `'uv' is not recognized` | Close and reopen your terminal. If you're in VS Code's terminal, quit VS Code completely and reopen it. |
+| `OSError: [WinError 126]` or `DLL load failed` when importing torch | Install the [Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe) and restart. |
+| `Could not install packages due to an OSError` / `No such file or directory` on Windows | Path too long or inside OneDrive. Move the folder to e.g. `C:\code\` and enable long paths (see the [Windows checklist](#windows-checklist)). |
+| `No matching distribution found for torch` / errors building NumPy or torch | Wrong Python version. Use `uv sync` (it picks 3.12 for you), or check `python --version` says 3.12.x. |
+| `Activate.ps1 cannot be loaded because running scripts is disabled` | Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`. |
+| `SSL: CERTIFICATE_VERIFY_FAILED` or downloads time out | A work or venue network is blocking downloads. Try home wifi or a phone hotspot. |
+| Something's still broken | Delete the `.venv` folder and run `uv sync` again. |
+
+### Running the notebooks
+
+| You see… | Fix |
+|---|---|
+| `ModuleNotFoundError: No module named 'cv2'` (or `ultralytics`, `torch`…) | VS Code is using the wrong Python. Click the kernel name (top right) and choose **.venv (Python 3.12.x)**. To check, run `import sys; print(sys.executable)` in a cell: the path should contain `.venv`. |
+| `.venv` isn't in the kernel list | Make sure you opened the `computer-vision-workshop` folder itself. Then press Ctrl/Cmd+Shift+P → **Developer: Reload Window**, and look under **Select Another Kernel → Python Environments**. |
+| `RuntimeError: Could not open webcam` | Check camera permissions ([Windows](#windows-checklist) / [macOS](#macos)) and close Zoom/Teams. If a previous webcam cell crashed, restart the kernel (it still holds the camera). Got two cameras? Set `CAMERA_INDEX = 1` in `workshop.py`. |
+| The cell is running but no window appears | The OpenCV window probably opened *behind* VS Code. Look for a Python icon in the taskbar or Dock, or use Alt+Tab / Cmd+Tab. |
+| Pressing `q` does nothing | Click the OpenCV window first: it needs keyboard focus, not VS Code. If it's still stuck, press **Interrupt** on the notebook toolbar, or **Restart** the kernel. |
+| "The kernel crashed" during SAM 2 / Grounding DINO / CLIP | Your laptop ran out of memory. Close other apps (especially browsers), restart the kernel, and re-run from the top of the notebook. |
