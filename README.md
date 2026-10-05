@@ -16,6 +16,8 @@ You'll need:
 
 > You **don't** need to install Python yourself: `uv` downloads the right version (3.12) automatically.
 
+> **On Windows?** Work through the [Windows checklist](#windows-checklist) first. It fixes the most common install problems.
+
 ### 1. Install uv
 
 [uv](https://docs.astral.sh/uv/) installs Python and all the workshop's packages for you, with the exact same versions on every laptop.
@@ -103,6 +105,35 @@ Any line marked `[FAIL]` comes with a `->` hint on how to fix it. See also [Trou
 Then select the `.venv` kernel in VS Code as in step 5.
 
 </details>
+
+### Platform notes
+
+#### Windows checklist
+
+Most install problems happen on Windows. Do these **before** step 1:
+
+- [ ] **Install the [Microsoft Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe).** PyTorch needs it. Without it you'll get `OSError: [WinError 126] ... error loading "...\torch\lib\c10.dll"`.
+- [ ] **Put the workshop in a short folder outside OneDrive,** e.g. `C:\code\computer-vision-workshop`. Desktop and Documents are often synced by OneDrive, which locks files mid-install and tries to upload gigabytes of packages. Very long paths can also make installs fail.
+- [ ] **Enable long paths** (needs admin, then restart): open PowerShell as Administrator and run
+  `New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name LongPathsEnabled -Value 1 -PropertyType DWORD -Force`
+- [ ] **Allow camera access:** Settings → Privacy & security → Camera → turn on *Camera access* **and** *Let desktop apps access your camera*.
+- [ ] **Use PowerShell, not WSL.** OpenCV windows and webcams don't work from inside WSL.
+- [ ] **Windows on ARM** (Snapdragon / Copilot+ laptops, Surface Pro X): PyTorch and OpenCV have no native ARM builds, so use the x64 version of Python, which runs under emulation and is slower. Replace step 3 with:
+  ```powershell
+  uv python install cpython-3.12-windows-x86_64-none
+  uv sync --python cpython-3.12-windows-x86_64-none
+  ```
+
+#### macOS
+
+- **Camera permission:** the first webcam cell triggers a permission prompt for VS Code. If you clicked *Don't Allow*, go to System Settings → Privacy & Security → Camera, turn VS Code on, and restart VS Code.
+- **Intel Macs** (Apple menu → About This Mac says "Intel"): the PyTorch version used here no longer supports Intel Macs, so `uv sync` will fail. Please pair up with a neighbour for the workshop.
+- If `git` asks you to install the Command Line Developer Tools, click *Install* and re-run the command afterwards.
+
+#### Linux
+
+- If importing OpenCV fails with `libGL.so.1: cannot open shared object file`, run `sudo apt install libgl1 libglib2.0-0`.
+- If the webcam won't open, check your user is in the `video` group: `groups | grep video`.
 
 ---
 
