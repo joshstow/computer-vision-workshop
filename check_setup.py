@@ -145,24 +145,21 @@ def check_downloads():
 # ---------------------------------------------------------------------------
 def check_camera():
     print("\n4. Webcam")
-    import cv2
+    from workshop import close_camera, open_camera
 
-    # DirectShow opens much faster and more reliably than the default backend on Windows
-    backend = cv2.CAP_DSHOW if platform.system() == "Windows" else cv2.CAP_ANY
-    cap = cv2.VideoCapture(0, backend)
-    ok, frame = cap.read() if cap.isOpened() else (False, None)
-    cap.release()
+    try:
+        cap = open_camera()
+    except RuntimeError as e:
+        report(FAIL, str(e))
+        return
 
+    ok, frame = cap.read()
+    close_camera(cap)
     if ok:
-        report(OK, f"Webcam 0 works ({frame.shape[1]}x{frame.shape[0]})")
+        report(OK, f"Webcam works ({frame.shape[1]}x{frame.shape[0]})")
     else:
-        hints = {
-            "Darwin": "System Settings > Privacy & Security > Camera: allow your terminal / VS Code, then restart it",
-            "Windows": "Settings > Privacy & security > Camera: turn on 'Let desktop apps access your camera'. "
-                       "Close other apps using the camera (Teams, Zoom...)",
-        }
-        report(FAIL, "Could not read a frame from webcam 0",
-               hints.get(platform.system(), "Check the camera is connected and not used by another app"))
+        report(FAIL, "Webcam opened but returned no frames",
+               "Close other apps using the camera (Zoom, Teams...) and try again")
 
 
 # ---------------------------------------------------------------------------
