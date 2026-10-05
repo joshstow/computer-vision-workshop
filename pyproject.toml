@@ -1,0 +1,32 @@
+[project]
+name = "computer-vision-workshop"
+version = "1.0.0"
+description = "Hands-on computer vision workshop: OpenCV, YOLO, SAM 2 and CLIP"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "opencv-python==4.13.0.92",
+    "ultralytics==8.4.15",
+    "lap==0.5.13",          # needed by YOLO's tracker (model.track)
+    "torch==2.10.0",
+    "torchvision==0.25.0",
+    "transformers==5.2.0",  # CLIP + Grounding DINO
+    "datasets==4.6.0",      # beans dataset for CLIP fine-tuning
+    "matplotlib==3.10.8",
+    "pillow==12.1.1",
+    "ipykernel==7.2.0",     # lets VS Code run the notebooks with this env
+    "ipywidgets==8.1.8",    # progress bars in notebooks
+]
+
+[tool.uv]
+package = false
+
+# On Linux, PyPI's default torch wheel bundles ~2.5 GB of CUDA libraries.
+# Pull the CPU-only build instead. macOS and Windows PyPI wheels are already CPU-sized.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
