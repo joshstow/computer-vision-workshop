@@ -4,228 +4,105 @@ A hands-on workshop going from raw pixels (OpenCV) through real-time object dete
 
 _by Josh Stow_
 
-## Prerequisites
+## Before the Workshop
 
-- A webcam (built-in or USB)
-- [VS Code](https://code.visualstudio.com/) with the [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) extensions installed
-- Git
+**Please do this at home, before the day.** It downloads about 3 GB (Python packages and AI models) and takes 10–20 minutes. Venue wifi won't cope with everyone doing it at once.
 
----
+You'll need:
 
-## Environment Setup
+- A laptop with a webcam (built-in or USB)
+- [VS Code](https://code.visualstudio.com/) with the [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) extensions
+- [Git](https://git-scm.com/downloads) (optional: you can download the ZIP instead, see step 2)
 
-> **Important:** This workshop requires **Python 3.12**. Newer versions (3.13/3.14) do not yet have compatible binary packages for all dependencies.
+> You **don't** need to install Python yourself: `uv` downloads the right version (3.12) automatically.
 
-### 1. Install uv (recommended)
+### 1. Install uv
 
-Install [uv](https://astral.sh/uv) first. We use it to install Python and create a consistent virtual environment across machines.
+[uv](https://docs.astral.sh/uv/) installs Python and all the workshop's packages for you, with the exact same versions on every laptop.
 
-#### macOS / Linux
+| macOS / Linux (Terminal) | Windows (PowerShell) |
+|---|---|
+| `curl -LsSf https://astral.sh/uv/install.sh \| sh` | `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 \| iex"` |
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+On Windows, if that command is blocked (e.g. on a work laptop), try `winget install --id=astral-sh.uv -e` instead.
+
+**Then close and reopen your terminal.** If you're using the terminal inside VS Code, quit VS Code completely and reopen it, so it picks up the new `uv` command. Check it worked:
+
 ```
-
-#### Windows (PowerShell)
-
-```powershell
-irm https://astral.sh/uv/install.ps1 | iex
-```
-
-Restart your terminal after installation, then verify:
-
-```bash
 uv --version
 ```
 
----
+### 2. Download the workshop
 
-### 2. Install Python 3.12 with uv
-
-```bash
-uv python install 3.12
 ```
-
-Verify you have the right version before continuing:
-
-```bash
-uv python list | grep 3.12
-```
-
-> **Important:** This workshop requires **Python 3.12**. Newer versions (3.13/3.14) do not yet have compatible binary packages for all dependencies.
-
-<details>
-<summary><strong>Backup: Install Python 3.12 without uv</strong></summary>
-
-Download and install the latest Python 3.12 release from the official site:
-
-**https://www.python.org/downloads/**
-
-Scroll down to the **3.12.x** releases and download the installer for your OS.
-
-- **macOS** — Download the `.pkg` installer and run it.
-- **Windows** — Download the `.exe` installer. **Check "Add Python to PATH"** during installation.
-- **Linux** — Use your package manager (e.g. `sudo apt install python3.12 python3.12-venv`) or download from the site.
-
-After installation, verify:
-
-```bash
-python3.12 --version
-# Should output: Python 3.12.x
-```
-
-> **Note:** On macOS/Linux the command may be `python3.12` rather than `python`. On Windows it is usually `python` or `py -3.12`.
-
-</details>
-
-<details>
-<summary><strong>Backup: Use pyenv</strong> (manage multiple Python versions side-by-side)</summary>
-
-[pyenv](https://github.com/pyenv/pyenv) lets you install and switch between multiple Python versions easily.
-
-#### macOS
-
-```bash
-brew install pyenv
-```
-
-Then add pyenv to your shell config (`~/.zshrc`):
-
-```bash
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
-echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
-echo 'eval "$(pyenv init -)"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-#### Linux (Ubuntu/Debian)
-
-Install build dependencies first:
-
-```bash
-sudo apt update
-sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
-  libreadline-dev libsqlite3-dev wget curl llvm libncurses-dev \
-  libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev tk-dev
-```
-
-Then install pyenv:
-
-```bash
-curl https://pyenv.run | bash
-```
-
-Add pyenv to your shell config (`~/.bashrc` or `~/.zshrc`):
-
-```bash
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-#### Windows
-
-On Windows, use [pyenv-win](https://github.com/pyenv-win/pyenv-win). Open **PowerShell** and run:
-
-```powershell
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-```
-
-Then **restart your terminal** for the changes to take effect.
-
-#### Install & activate Python 3.12
-
-```bash
-pyenv install 3.12
-```
-
-If that shows an error, list available versions and pick the latest 3.12.x:
-
-```bash
-pyenv install --list | grep "3.12"
-```
-
-Then pin 3.12 to this project directory (won't affect the rest of your system):
-
-```bash
-pyenv local 3.12
-```
-
-</details>
-
----
-
-### 3. Clone the Repository
-
-```bash
 git clone https://github.com/joshstow/computer-vision-workshop.git
 cd computer-vision-workshop
 ```
 
----
+No Git? On the GitHub page click **Code → Download ZIP**, unzip it, then `cd` into the folder in your terminal (it will be called `computer-vision-workshop-main`).
 
-### 4. Create and Activate a Virtual Environment (uv)
+### 3. Install everything
 
-#### macOS / Linux
-
-```bash
-uv venv --python 3.12
-source .venv/bin/activate
+```
+uv sync
 ```
 
-#### Windows (PowerShell)
+This one command downloads Python 3.12 if needed, creates a `.venv` folder inside the project, and installs every package at the exact versions in `uv.lock`. There's no need to activate anything or run `pip`.
 
-```powershell
-uv venv --python 3.12
-.venv\Scripts\Activate.ps1
+### 4. Run the setup check
+
+```
+uv run python check_setup.py
 ```
 
-> If you get an execution policy error on Windows, run:
-> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+This checks every library, downloads all the AI models, and tests your webcam. You want the last line to say:
+
+```
+All good - you're ready for the workshop!
+```
+
+Any line marked `[FAIL]` comes with a `->` hint on how to fix it. See also [Troubleshooting](#troubleshooting).
+
+### 5. Select the kernel in VS Code
+
+1. In VS Code, use **File → Open Folder…** and open the `computer-vision-workshop` folder itself (not the folder above it).
+2. Open `01_opencv.ipynb`.
+3. Click **Select Kernel** (top right) → **Python Environments** → **.venv (Python 3.12.x)**.
+4. Run the first cell (Shift+Enter). If it prints numbers and shows a picture, you're done.
 
 <details>
-<summary><strong>Backup: Create a venv without uv</strong></summary>
+<summary><strong>Alternative: set up without uv (plain Python + pip)</strong></summary>
 
-#### macOS / Linux
+1. Install **Python 3.12** (not 3.13 or newer) from [python.org/downloads](https://www.python.org/downloads/). Scroll down to the 3.12.x releases.
+   On Windows, **tick "Add python.exe to PATH"** in the installer.
+2. In the `computer-vision-workshop` folder, create and activate a virtual environment, then install:
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
+   **macOS / Linux**
+   ```bash
+   python3.12 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   python check_setup.py
+   ```
 
-#### Windows (PowerShell)
+   **Windows (PowerShell)**
+   ```powershell
+   py -3.12 -m venv .venv
+   .venv\Scripts\Activate.ps1
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   python check_setup.py
+   ```
 
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-```
+   If `Activate.ps1` gives an execution policy error, run
+   `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` and try again.
 
-> If you get an execution policy error on Windows, run:
-> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+> Always use `python -m pip`, never plain `pip`. Plain `pip` can belong to a different Python on your machine, which installs the packages somewhere your notebooks can't see them.
+
+Then select the `.venv` kernel in VS Code as in step 5.
 
 </details>
-
----
-
-### 5. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-This installs everything needed for all three notebooks (OpenCV, YOLO, SAM 2, CLIP, etc.).
-
----
-
-### 6. Select the Kernel in VS Code
-
-1. Open the `computer-vision-workshop` folder in VS Code.
-2. Open any notebook (e.g. `01_opencv.ipynb`).
-3. Click the **kernel picker** in the top-right corner of the notebook.
-4. Select **`.venv (Python 3.12.x)`** from the list.
-
-You're ready to go!
 
 ---
 
