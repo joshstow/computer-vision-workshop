@@ -7,3 +7,5 @@ models/
 results/
 
 *.pt
+
+__pycache__/
