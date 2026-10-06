@@ -6,6 +6,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "opencv-python==4.13.0.92",
     "ultralytics==8.4.15",
+    "sam2==1.1.0",          # Meta's SAM 2 (source-only on PyPI, see [tool.uv] below)
     "lap==0.5.13",          # needed by YOLO's tracker (model.track)
     "torch==2.10.0",
     "torchvision==0.25.0",
@@ -19,6 +20,31 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+# sam2 has no pre-built wheels, so it is built on each laptop. Make that build
+# pure Python: skip the optional CUDA extension (it needs a C++/CUDA compiler,
+# and the notebooks work without it) and reuse the torch we already install
+# instead of downloading a second copy just for the build.
+[tool.uv.extra-build-variables]
+sam2 = { SAM2_BUILD_CUDA = "0" }
+
+[tool.uv.extra-build-dependencies]
+sam2 = [{ requirement = "torch", match-runtime = true }]
+
+# sam2's dependencies (copied from its setup.py) so uv can resolve without building it first
+[[tool.uv.dependency-metadata]]
+name = "sam2"
+version = "1.1.0"
+requires-python = ">=3.10.0"
+requires-dist = [
+    "torch>=2.5.1",
+    "torchvision>=0.20.1",
+    "numpy>=1.24.4",
+    "tqdm>=4.66.1",
+    "hydra-core>=1.3.2",
+    "iopath>=0.1.10",
+    "pillow>=9.4.0",
+]
 
 # On Linux, PyPI's default torch wheel bundles ~2.5 GB of CUDA libraries.
 # Pull the CPU-only build instead. macOS and Windows PyPI wheels are already CPU-sized.

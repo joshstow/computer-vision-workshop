@@ -84,6 +84,7 @@ Any line marked `[FAIL]` comes with a `->` hint on how to fix it. See also [Trou
    python3.12 -m venv .venv
    source .venv/bin/activate
    python -m pip install --upgrade pip
+   export SAM2_BUILD_CUDA=0
    python -m pip install -r requirements.txt
    python check_setup.py
    ```
@@ -93,9 +94,12 @@ Any line marked `[FAIL]` comes with a `->` hint on how to fix it. See also [Trou
    py -3.12 -m venv .venv
    .venv\Scripts\Activate.ps1
    python -m pip install --upgrade pip
+   $env:SAM2_BUILD_CUDA = "0"
    python -m pip install -r requirements.txt
    python check_setup.py
    ```
+
+   `SAM2_BUILD_CUDA=0` tells SAM 2's installer to skip compiling an optional GPU extension that the workshop doesn't need.
 
    If `Activate.ps1` gives an execution policy error, run
    `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` and try again.
