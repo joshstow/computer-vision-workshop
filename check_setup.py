@@ -16,6 +16,7 @@ Options:
 """
 
 import importlib
+import importlib.metadata
 import os
 import platform
 import sys
@@ -74,7 +75,8 @@ LIBRARIES = [
     ("PIL", "Pillow"),
     ("torch", "PyTorch"),
     ("torchvision", "torchvision"),
-    ("ultralytics", "Ultralytics (YOLO + SAM 2)"),
+    ("ultralytics", "Ultralytics (YOLO)"),
+    ("sam2", "SAM 2 (Meta)"),
     ("lap", "lap (YOLO tracker)"),
     ("transformers", "Transformers (CLIP + Grounding DINO)"),
     ("datasets", "Datasets"),
@@ -88,7 +90,8 @@ def check_imports():
     for module, name in LIBRARIES:
         try:
             mod = importlib.import_module(module)
-            report(OK, f"{name} {getattr(mod, '__version__', '')}")
+            version = getattr(mod, "__version__", None) or importlib.metadata.version(module)
+            report(OK, f"{name} {version}")
         except Exception as e:  # not just ImportError: torch raises OSError on Windows DLL problems
             all_ok = False
             fix = "Re-run `uv sync` (or `python -m pip install -r requirements.txt` inside your venv)"
@@ -117,10 +120,25 @@ def check_downloads():
             report(FAIL, f"{name}: {type(e).__name__}: {e}",
                    "Check your internet connection (or proxy / firewall) and re-run this script")
 
-    from ultralytics import SAM, YOLO
+    from ultralytics import YOLO
     for weights in ["yolov8n.pt", "yolov8n-pose.pt", "yolov8n-seg.pt"]:
         attempt(f"YOLO weights models/{weights}", lambda w=weights: YOLO(f"models/{w}"))
-    attempt("SAM 2.1 small weights models/sam2.1_s.pt", lambda: SAM("models/sam2.1_s.pt"))
+
+    def sam2():
+        # Same checkpoint and config as notebooks 03 and 04
+        import urllib.request
+        from sam2.build_sam import build_sam2
+        checkpoint = "models/sam2.1_hiera_small.pt"
+        if not os.path.exists(checkpoint):
+            os.makedirs("models", exist_ok=True)
+            # Download to a temp name first so a dropped connection never leaves a broken file behind
+            urllib.request.urlretrieve(
+                "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_small.pt",
+                checkpoint + ".part")
+            os.replace(checkpoint + ".part", checkpoint)
+        build_sam2("configs/sam2.1/sam2.1_hiera_s.yaml", checkpoint, device="cpu")
+
+    attempt("SAM 2.1 small checkpoint models/sam2.1_hiera_small.pt", sam2)
 
     from transformers import (AutoModelForZeroShotObjectDetection, AutoProcessor,
                               CLIPModel, CLIPProcessor)
