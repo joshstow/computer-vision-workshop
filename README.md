@@ -4,9 +4,7 @@ A hands-on workshop going from raw pixels (OpenCV) through real-time object dete
 
 _by Josh Stow_
 
-## Before the Workshop
-
-**Please do this at home, before the day.** It downloads about 3 GB (Python packages and AI models) and takes 10–20 minutes. Venue wifi won't cope with everyone doing it at once.
+## Prerequisites
 
 You'll need:
 
